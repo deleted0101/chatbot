@@ -70,6 +70,7 @@ model.fit(training,output, n_epoch= 1000, show_metric=True)
 model.save("model.tflearn")'''
 
 import nltk
+
 nltk.download('punkt')
 from nltk.stem.lancaster import LancasterStemmer
 import numpy
@@ -77,12 +78,13 @@ import json
 import pickle
 from tensorflow import keras
 from sklearn.model_selection import train_test_split
+
 stemmer = LancasterStemmer()
 with open("intents.json", encoding="utf-8") as file:
     data = json.load(file)
 try:
     with open("data.pickle", "rb") as f:
-         words, labels, training, output = pickle.load(f)
+        words, labels, training, output = pickle.load(f)
 except:
     words = []
     labels = []
@@ -115,7 +117,7 @@ except:
 
         for w in words:
             if w in wrds:
-               bag.append(1)
+                bag.append(1)
             else:
                 bag.append(0)
 
@@ -131,7 +133,6 @@ except:
     with open("data.pickle", "wb") as f:
         pickle.dump((words, labels, training, output), f)
 
-
 X_train, X_test, y_train, y_test = train_test_split(training, output, test_size=0.2, random_state=42)
 
 model = keras.Sequential()
@@ -146,6 +147,7 @@ except:
     model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
     model.save('my_model.keras')
 
+
 def bag_of_words(s, words):
     bag = [0 for _ in range(len(words))]
 
@@ -153,27 +155,22 @@ def bag_of_words(s, words):
     s_words = [stemmer.stem(word.lower()) for word in s_words]
 
     for se in s_words:
-        for i,w in enumerate(words):
+        for i, w in enumerate(words):
             if w == se:
-                bag[i].append(1)
+                bag[i] = 1
 
-    return numpy.array(bag)
-
-
+    return bag  # Remove the wrapping list.
 
 
+def chat():
+    print("start talking with the bot!")
+    while True:
+        inp = input("You! ")
+        if inp.lower() == "quit":
+            break
+        results = model.predict([bag_of_words(inp, words)])  # Remove the wrapping list.
+
+        print(results)
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+chat()
