@@ -96,10 +96,10 @@ except:
             wrds = nltk.word_tokenize(pattern)
             words.extend(wrds)
             docs_x.append(wrds)
-            docs_y.append(intent["tags"])
+            docs_y.append(intent["tag"])
 
-        if intent["tags"] not in labels:
-            labels.append(intent["tags"])
+        if intent["tag"] not in labels:
+            labels.append(intent["tag"])
 
     words = [stemmer.stem(w.lower()) for w in words if w != "?"]
     words = sorted(list(set(words)))
@@ -169,17 +169,35 @@ def chat():
         inp = input("You! ")
         if inp.lower() == "quit":
             break
-        results = model.predict([bag_of_words(inp, words)]) [0]
+
+        results = model.predict([bag_of_words(inp, words)])[0]
+
+        # Find the intent with the highest probability
+        max_prob_index = numpy.argmax(results)
+        max_prob = results[max_prob_index]
+
+        if max_prob > 0.7:
+            tag = labels[max_prob_index]
+
+            for tg in data["intents"]:
+                if tg['tag'] == tag:
+                    responses = tg['responses']
+
+            print(random.choice(responses))
+        else:
+            print("Sorry, I didn't understand your question. Please try again.")
+
+        '''results = model.predict([bag_of_words(inp, words)])[0]
         results_index = numpy.argmax(results)
         tag = labels[results_index]
 
         if results[results_index] > 0.7:
             for tg in data["intents"]:
-                if tg["tag"] == tag:
-                    response = tag['response']
+                if tg['tag'] == tag:
+                    responses = tag['responses']
 
-            print(random.choice(response))
+            print(random.choice(responses))
         else:
-            print("Sorry! I didn't get that, try again.")
+            print("Sorry! I didn't get that, try again.")'''
 
 chat()
