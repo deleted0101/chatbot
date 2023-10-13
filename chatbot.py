@@ -68,6 +68,7 @@ model = tflearn.DNN(net)
 
 model.fit(training,output, n_epoch= 1000, show_metric=True)
 model.save("model.tflearn")'''
+import random
 
 import nltk
 
@@ -168,9 +169,17 @@ def chat():
         inp = input("You! ")
         if inp.lower() == "quit":
             break
-        results = model.predict([bag_of_words(inp, words)])  # Remove the wrapping list.
+        results = model.predict([bag_of_words(inp, words)]) [0]
+        results_index = numpy.argmax(results)
+        tag = labels[results_index]
 
-        print(results)
+        if results[results_index] > 0.7:
+            for tg in data["intents"]:
+                if tg["tag"] == tag:
+                    response = tag['response']
 
+            print(random.choice(response))
+        else:
+            print("Sorry! I didn't get that, try again.")
 
 chat()
