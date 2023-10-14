@@ -237,5 +237,53 @@ lemmatizer = WordNetLemmatizer()
 words = [lemmatizer.lemmatize(word) for word_list in words for word in word_list if word not in ignore_letters]
 words = sorted(set(words))
 
+classes = sorted(set(classes))
 
-print(words)
+pickle.dump(words, open('words.pkl','wb'))
+pickle.dump(classes, open('classes.pickle', 'wb'))
+
+training = []
+output_empty = [0] * len(classes)
+
+for document in documents:
+  bag = []
+  words_patterns = documents[0]
+  words_patterns = [lemmatizer.lemmatize(word.lower()) for word in words_patterns]
+  for word in words:
+    bag.append(1) if word in words_patterns else bag.append(0)
+
+  output_row = list(output_empty)
+  output_row[classes.index(document[1])] = 1
+  training.append([bag, output_row])
+
+random.shuffle(training)
+training = np.array(training)
+
+train_x = list(training[:, 0])
+train_y = list(training[:, 1])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
