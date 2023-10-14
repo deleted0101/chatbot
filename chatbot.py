@@ -19,5 +19,29 @@ def clean_up_sentence(sentence):
     sentence_words = [lemmatizer.lemmatize(word) for word in sentence]
     return sentence_words
 
+def bag_of_words(sentence):
+    sentence_words = clean_up_sentence(sentence)
+    bag = [0] * len(words)
+    for w in sentence_words:
+        for i, word in enumerate(words):
+            if word == w :
+                bag[i] = 1
+    return np.array(bag)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
