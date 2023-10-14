@@ -28,6 +28,35 @@ def bag_of_words(sentence):
                 bag[i] = 1
     return np.array(bag)
 
+def predict_class(sentence):
+    bow = bag_of_words(sentence)
+    res = model.predict(np.array([bow]))[0]
+    ERROR THRESHOLD = 0.25
+    result = [(i,r) for i , r in enumerate(res) if r > ERROR THRESHOLD]
+
+    results.sort(key=lamda x:x[1], reverse = True)
+    return_list = []
+    for r in results:
+        return_list.append({'intents': classes(r[0]),'probability': str(r[1])})
+    return return_list
+
+def get_response(intents_list , intents_json):
+    tag = intents_list[0]['intents']
+    list_of_intents = intents_json['intents']
+    for i in list_of_intents:
+        if i['tag'] == tag:
+            result = random.choice(i['reponse'])
+            break
+    return result
+print("Go! Bot is Running")
+
+while True:
+    message = input("")
+    ints = predict_class(message)
+    res = get_response(ints, intents)
+    print(res)
+
+
 
 
 
