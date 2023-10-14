@@ -14,5 +14,10 @@ words = pickle.load(open('words.pkl','rb'))
 classes = pickle.load(open('classes.pickle','rb'))
 model = load_model('chatbot_model.model')
 
+def clean_up_sentence(sentence):
+    sentence_words = nltk.word_tokenize(sentence)
+    sentence_words = [lemmatizer.lemmatize(word) for word in sentence]
+    return sentence_words
+
 
 
