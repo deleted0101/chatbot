@@ -67,7 +67,7 @@ net = tflearn.fully_connected(net , len(output[0]), activation = "softmax")
 model = tflearn.DNN(net)
 
 model.fit(training,output, n_epoch= 1000, show_metric=True)
-model.save("model.tflearn")'''
+model.save("model.tflearn")
 import random
 
 import nltk
@@ -187,7 +187,7 @@ def chat():
         else:
             print("Sorry, I didn't understand your question. Please try again.")
 
-        '''results = model.predict([bag_of_words(inp, words)])[0]
+        results = model.predict([bag_of_words(inp, words)])[0]
         results_index = numpy.argmax(results)
         tag = labels[results_index]
 
@@ -198,6 +198,44 @@ def chat():
 
             print(random.choice(responses))
         else:
-            print("Sorry! I didn't get that, try again.")'''
+            print("Sorry! I didn't get that, try again.")
 
-chat()
+chat()'''
+
+import random
+import json
+import numpy as np
+import pickle
+
+import nltk
+nltk.download('punkt')
+nltk.download('wordnet')
+
+from nltk.stem import WordNetLemmatizer
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Activation ,Dropout
+from tensorflow.keras.optimizers import SGD
+
+
+
+intents = json.loads(open('intents.json').read())
+
+words = []
+classes = []
+documents = []
+ignore_letters = ['?','!','.',',']
+
+for intent in intents['intents']:
+  for pattern in intent['patterns']:
+    word_list = nltk.word_tokenize(pattern)
+    words.append(word_list)
+    documents.append((word_list, intent['tag']))
+    if intent['tag'] not in classes:
+      classes.append(intent['tag'])
+
+lemmatizer = WordNetLemmatizer()
+words = [lemmatizer.lemmatize(word) for word_list in words for word in word_list if word not in ignore_letters]
+words = sorted(set(words))
+
+
+print(words)
